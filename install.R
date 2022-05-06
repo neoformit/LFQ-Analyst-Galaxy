@@ -1,10 +1,7 @@
 install.packages(c(
     "devtools",
-    "mvtnorm",     # **
-    "tmvtnorm",    # **
-    "impute",      # **
-    "pcaMethods",  # **
-    "imputeLCMD",  # **
+    "mvtnorm",
+    "tmvtnorm",
     "plotly",
     "DT",
     "BiocManager",
@@ -20,4 +17,18 @@ install.packages(c(
   repos="http://cran.rstudio.com/"
 )
 
-# ** = not available for R3.4.3
+BiocManager::install(pkgs=c(
+    "imputeLCMD",
+    "pcaMethods",
+    "SummarizedExperiment",
+    "ComplexHeatmap"
+  ),
+  ask=FALSE
+)
+
+BiocManager::install(pkgs=c(
+    "limma",
+    "DEP"
+  ),
+  ask=FALSE
+)

@@ -1,6 +1,21 @@
-FROM rocker/shiny-verse:3.4.3
-RUN apt-get update && apt-get install -y libnetcdf-dev libcairo2-dev
-RUN pkg-config --cflags cairo | export PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
-RUN Rscript -e 'install.packages(c("devtools", "mvtnorm", "tmvtnorm","impute", "pcaMethods", "imputeLCMD", "plotly", "DT", "BiocManager","testthat", "RColorBrewer", "shiny","shinyalert","shinydashboard", "shinyjs", "svglite"), dependencies=TRUE, repos="http://cran.rstudio.com/")'
-RUN Rscript -e 'BiocManager::install(pkgs=c("DEP", "SummarizedExperiment", "limma", "ComplexHeatmap"))'
-COPY . /srv/shiny-server/LFQ-Analyst
+# FROM rocker/shiny:3.4.3
+# FROM rocker/shiny-verse:3.5.2
+FROM rocker/shiny-verse:3.6.0
+COPY . /srv/shiny-server/lfq-analyst
+
+RUN apt-get update && apt-get install -y \
+  libnetcdf-dev   \
+  libcairo2-dev   \
+  libudunits2-dev \
+  libharfbuzz-dev \
+  libfribidi-dev  \
+  libgeos-dev     \
+  libgdal-dev     \
+  libtiff5-dev
+
+ENV PASSWORD=secret
+
+RUN pkg-config --cflags cairo && export PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
+RUN Rscript /srv/shiny-server/lfq-analyst/install.R
+
+CMD R -e "library(shiny); runApp('/srv/shiny-server/lfq-analyst', port=3838, host='0.0.0.0')"
